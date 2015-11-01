@@ -1,42 +1,43 @@
+<?php
+define('__ROOT__', dirname(__FILE__)); 
 
-<?php include 'vendor/ImagickLayerable.php'; ?>
+function exception_handler($exception) {
+  echo "Uncaught exception: <br>". $exception->getMessage(). "\n";
+}
 
-<div style="width: 1280px; height:720px">
-    <?php
-    try {
-//        //This would create a white canvas of dimensions 1280px x 720px
-//        $layerStack = new ImagickLayerable(1280, 720, '#ffffff');
-//        $layerStack->addLayerToStack("base_wall", new Imagick("images/R24_BASE-wall_WRINKLE.png"));
-//        $layerStack->addLayerToStack("base_mask_wall", new Imagick("images/R24_BASE-mask_WALL.png"), 0, 0, Imagick::COMPOSITE_MULTIPLY);
-//
-//        $im = $layerStack->getFinalResult();
-//        $im->setImageFormat('png');
-        //echo '<img src="data:image/jpg;base64,' . base64_encode($im->getImageBlob()) . '" alt="" />';
+set_exception_handler('exception_handler');
 
-        $base = new Imagick('images/R24_BASE-wall_WRINKLE.png');
-        $mask = new Imagick('images/R24_BASE-mask_WALL.png');
+error_reporting(E_ALL);
+ini_set('display_errors','On');
 
-        //$base->colorizeimage('#ccc401', 1.0);
-        $draw = new ImagickDraw();
+ini_set('error_log',__ROOT__ . 'log/my_file.log');
 
-        $draw->setFillColor('#ccc401');
-        $draw->setFillAlpha(0.2);
-        $geometry = $base->getImageGeometry();
-        $width = $geometry['width'];
-        $height = $geometry['height'];
+require_once(__ROOT__.'/lib/poolBuilder.php'); 
+?>
 
-        $draw->rectangle(0, 0, $width, $height);
-        $base->drawImage($draw);
-        // Copy opacity mask
-        $base->compositeImage($mask, Imagick::COMPOSITE_MULTIPLY, 0, 0, Imagick::CHANNEL_ALPHA);
+<!DOCTYPE html>
 
-        $final = new Imagick('images/R24_BASE-wall_WRINKLE.png');
-        $final->compositeImage($base, Imagick::COMPOSITE_DEFAULT, 0, 0);
-        echo '<img src="data:image/jpg;base64,' . base64_encode($final->getImageBlob()) . '" alt="" />';
+<html>
+    <head>
+        <title>Trendium - Proof of concept</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div>
+            <?php
+            try {
+                $poolBuilder = new \poolBuilder('rgb(51,42,37)');
 
-    } catch (Exception $ex) {
-        echo $ex->getMessage();
-    }
-    ?>
+                echo '<img src="data:image/jpg;base64,' . $poolBuilder->getWallImage() . '" alt="" />';
+            } catch (Exception $ex) {
+                echo $ex->getMessage();
+            }
+            ?>
 
-</div>
+        </div>
+        <img src="images/R24_BASE-wall_WRINKLE.png">
+    </body>
+</html>
+
