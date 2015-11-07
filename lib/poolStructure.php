@@ -78,6 +78,9 @@ class poolStructure {
         $im->clear();
         $im->destroy();
 
+        $partMask->clear();
+        $partMask->destroy();
+        
         return $part;
     }
 
