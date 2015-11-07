@@ -56,14 +56,15 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
                     <div class="col-sm-12">
                         <?php
                         try {
-                            $red = isset($_POST['wall_color_red']) ? $_POST['wall_color_red'] : 204;
-                            $green = isset($_POST['wall_color_red']) ? $_POST['wall_color_green'] : 196;
-                            $blue = isset($_POST['wall_color_red']) ? $_POST['wall_color_blue'] : 192;
+//                            $red = isset($_POST['wall_color_red']) ? $_POST['wall_color_red'] : 204;
+//                            $green = isset($_POST['wall_color_red']) ? $_POST['wall_color_green'] : 196;
+//                            $blue = isset($_POST['wall_color_red']) ? $_POST['wall_color_blue'] : 192;
+//                            
+//                            echo "<h3>Current color: $red - $green - $blue</h3>";
+//                            $poolBuilder = new \poolBuilder();
+//                            $poolBuilder->setWallColor("rgb($red,$green,$blue)");
                             
-                            echo "<h3>Current color: $red - $green - $blue</h3>";
                             $poolBuilder = new \poolBuilder();
-                            $poolBuilder->setWallColor("rgb($red,$green,$blue)");
-
                             echo '<img src="data:image/jpg;base64,' . $poolBuilder->generatePool() . '" alt="" />';
                         } catch (Exception $ex) {
                             echo $ex->getMessage();
