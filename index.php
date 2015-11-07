@@ -23,49 +23,70 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/color.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <div class="container-fluid">
             <form method="post">
+                <?php
+                $color = isset($_POST['structure_color']) ? $_POST['structure_color'] : 10;
+                ?>
                 <div class="row">
                     <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="wall_color_red">Red</label>
-                            <input type="text" class="form-control" id="wall_color_red" name="wall_color_red" >
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-success"><h3>Select your color</h3></li>
+                            <li class="list-group-item">
+                                <input type="radio" class="selector" id="structure_color" name="structure_color" value="10" <?php if ($color == 10) echo 'checked'; ?> >
+                                <label>Basalt Grey</label>
+                            </li>
+                            <li class="list-group-item">
+                                <input type="radio" class="selector" id="structure_color" name="structure_color" value="20" <?php if ($color == 20) echo 'checked'; ?> >
+                                <label>Beige</label>
+                            </li>
+                            <li class="list-group-item">
+                                <input type="radio" class="selector" id="structure_color" name="structure_color" value="30" <?php if ($color == 30) echo 'checked'; ?> >
+                                <label>Burgundy</label>
+                            </li>
+                            <li class="list-group-item">
+                                <input type="radio" class="selector" id="structure_color" name="structure_color" value="40" <?php if ($color == 40) echo 'checked'; ?> >
+                                <label>Cacao</label>
+                            </li>
+                            <li class="list-group-item">
+                                <input type="radio" class="selector" id="structure_color" name="structure_color" value="50" <?php if ($color == 50) echo 'checked'; ?> >
+                                <label>Choco Brown</label>
+                            </li>
+                        </ul>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="wall_color_green">Green</label>
-                            <input type="text" class="form-control" id="wall_color_green" name="wall_color_green" >
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="wall_color_blue">Blue</label>
-                            <input type="text" class="form-control" id="wall_color_blue" name="wall_color_blue" >
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-8">
                         <?php
                         try {
-//                            $red = isset($_POST['wall_color_red']) ? $_POST['wall_color_red'] : 204;
-//                            $green = isset($_POST['wall_color_red']) ? $_POST['wall_color_green'] : 196;
-//                            $blue = isset($_POST['wall_color_red']) ? $_POST['wall_color_blue'] : 192;
-//                            
-//                            echo "<h3>Current color: $red - $green - $blue</h3>";
-//                            $poolBuilder = new \poolBuilder();
-//                            $poolBuilder->setWallColor("rgb($red,$green,$blue)");
-                            
+                            $color = isset($_POST['structure_color']) ? $_POST['structure_color'] : 10;
+                            $colorName = 'Basalt Grey';
+                            switch ($color) {
+                                case 20:
+                                    $colorName = 'Beige';
+                                    break;
+                                case 30:
+                                    $colorName = 'Burgundy';
+                                    break;
+                                case 40:
+                                    $colorName = 'Cacao';
+                                    break;
+                                case 50:
+                                    $colorName = 'Choco Brown';
+                                    break;
+                            }
+
+                            echo "<h3>Current color: $colorName</h3>";
+
+
                             $poolBuilder = new \poolBuilder();
-                            echo '<img src="data:image/jpg;base64,' . $poolBuilder->generatePool() . '" alt="" />';
+                            echo '<img class="img-responsive" src="data:image/jpg;base64,' . $poolBuilder->generatePool($color) . '" alt="" />';
                         } catch (Exception $ex) {
                             echo $ex->getMessage();
                         }
