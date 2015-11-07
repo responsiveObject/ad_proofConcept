@@ -55,6 +55,10 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
                                 <input type="radio" class="selector" id="structure_color" name="structure_color" value="50" <?php if ($color == 50) echo 'checked'; ?> >
                                 <label>Choco Brown</label>
                             </li>
+                            <li class="list-group-item">
+                                <input type="radio" class="selector" id="structure_color" name="structure_color" value="60" <?php if ($color == 60) echo 'checked'; ?> >
+                                <label>Onyx</label>
+                            </li>
                         </ul>
                         <div class="row">
                             <div class="col-sm-12">
@@ -79,6 +83,9 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
                                     break;
                                 case 50:
                                     $colorName = 'Choco Brown';
+                                    break;
+                                case 60:
+                                    $colorName = 'Onyx';
                                     break;
                             }
 
