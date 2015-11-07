@@ -134,22 +134,32 @@ class poolStructure {
 
         if ($structureUpright) {
             $structure->compositeimage($structureUpright, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            $structureUpright->clear();
+            $structureUpright->destroy();
         }
 
         if ($structureCover) {
             $structure->compositeimage($structureCover, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            $structureCover->clear();
+            $structureCover->destroy();
         }
 
         if ($structureLedge) {
             $structure->compositeimage($structureLedge, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            $structureLedge->clear();
+            $structureLedge->destroy();
         }
         
         if ($structureFoot) {
             $structure->compositeimage($structureFoot, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            $structureFoot->clear();
+            $structureFoot->destroy();
         }
 
         if ($structureRails) {
             $structure->compositeimage($structureRails, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            $structureRails->clear();
+            $structureRails->destroy();
         }
 
         return $structure;
