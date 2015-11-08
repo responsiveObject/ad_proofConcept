@@ -10,7 +10,7 @@ set_exception_handler('exception_handler');
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-ini_set('error_log', __ROOT__ . 'log/my_file.log');
+ini_set('error_log', __ROOT__ . '/log/my_file.log');
 
 require_once(__ROOT__ . '/lib/poolBuilder.php');
 ?>
@@ -104,4 +104,3 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
         </div>
     </body>
 </html>
-

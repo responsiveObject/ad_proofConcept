@@ -10,9 +10,11 @@ class poolStructure {
     const COLOR_ONYX = 60;
 
     private $color;
+    private $baseColor;
 
     function __construct($color) {
         $this->color = $color;
+        $this->baseColor = $this->getRGB();
     }
 
     private function buildBase() {
@@ -66,20 +68,15 @@ class poolStructure {
     private function applyPartColor($maskFile) {
         $part = $this->buildBase();
 
-        $partMask = new Imagick($maskFile);
-
         $im = new Imagick();
-        $im->newimage(1280, 720, $this->getRGB(), 'png');
+        $im->newimage(1280, 720, $this->baseColor, 'png');
         $part->compositeimage($im, Imagick::COMPOSITE_MULTIPLY, 0, 0);
+        $im->clear();
 
+        $partMask = new Imagick($maskFile);
         $part->setimagematte(1);
         $part->compositeimage($partMask, Imagick::COMPOSITE_DSTIN, 0, 0);
-
-        $im->clear();
-        $im->destroy();
-
         $partMask->clear();
-        $partMask->destroy();
         
         return $part;
     }
@@ -127,39 +124,33 @@ class poolStructure {
     public function generateStructure() {
         $structure = $this->buildBase();
         $structureUpright = $this->applyUprightsMask();
-        $structureCover = $this->applyCoverMask();
-        $structureLedge = $this->applyLedgeMask();
-        $structureFoot = $this->applyFootMask();
-        $structureRails = $this->applyRailsMask();
-
         if ($structureUpright) {
             $structure->compositeimage($structureUpright, Imagick::COMPOSITE_DEFAULT, 0, 0);
             $structureUpright->clear();
-            $structureUpright->destroy();
         }
 
+        $structureCover = $this->applyCoverMask();
         if ($structureCover) {
             $structure->compositeimage($structureCover, Imagick::COMPOSITE_DEFAULT, 0, 0);
             $structureCover->clear();
-            $structureCover->destroy();
         }
 
+        $structureLedge = $this->applyLedgeMask();
         if ($structureLedge) {
             $structure->compositeimage($structureLedge, Imagick::COMPOSITE_DEFAULT, 0, 0);
             $structureLedge->clear();
-            $structureLedge->destroy();
         }
-        
+
+        $structureFoot = $this->applyFootMask();
         if ($structureFoot) {
             $structure->compositeimage($structureFoot, Imagick::COMPOSITE_DEFAULT, 0, 0);
             $structureFoot->clear();
-            $structureFoot->destroy();
         }
 
+        $structureRails = $this->applyRailsMask();       
         if ($structureRails) {
             $structure->compositeimage($structureRails, Imagick::COMPOSITE_DEFAULT, 0, 0);
             $structureRails->clear();
-            $structureRails->destroy();
         }
 
         return $structure;
