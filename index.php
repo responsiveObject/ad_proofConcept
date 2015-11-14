@@ -35,6 +35,11 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
             .slider.slider-horizontal {
                 width: 100%;
             }
+            
+            .list-group-item-success {
+                color: white;
+                background-color: #0480be;
+            }
         </style>
     </head>
     <body>

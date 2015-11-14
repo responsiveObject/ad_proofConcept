@@ -7,10 +7,10 @@ class poolCaching {
     private $cache_folder;
     private $cache_file;
 
-    function __construct($poolId) {
+    function __construct($poolId, $ext = '.html') {
         $this->cache_folder = __ROOT__ . '/cache/';
         $poolFile = 'alto' . $poolId . 'design';
-        $this->cache_file = md5($poolFile) . ".html";
+        $this->cache_file = md5($poolFile) . $ext;
     }
 
     // Checks whether the page has been cached or not
@@ -21,10 +21,13 @@ class poolCaching {
         return (time() - $this->cache_expires < $cachefile_created);
     }
 
+    function getCacheFile() {
+        return $this->cache_folder . $this->cache_file;
+    }
+    
     // Reads from a cached file
     function read_cache() {
-        $cachefile = $this->cache_folder . $this->cache_file;
-        return file_get_contents($cachefile);
+        return file_get_contents($this->getCacheFile());
     }
 
     // Writes to a cached file

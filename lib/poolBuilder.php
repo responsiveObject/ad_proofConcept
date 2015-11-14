@@ -54,7 +54,7 @@ class poolBuilder {
         set_time_limit(0);
         $cacheKey = "c{$color}d{$darken}";
         $poolCache = new \poolCaching($cacheKey);
-        if ($poolCache->is_cached()) {
+        if (false && $poolCache->is_cached()) {
             $poolImageCached = $poolCache->read_cache();
             return $poolImageCached;
         } else {

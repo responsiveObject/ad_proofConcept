@@ -77,7 +77,7 @@ class poolStructure {
         $part->setimagematte(1);
         $part->compositeimage($partMask, Imagick::COMPOSITE_DSTIN, 0, 0);
         $partMask->clear();
-        
+
         return $part;
     }
 
@@ -122,38 +122,48 @@ class poolStructure {
     }
 
     public function generateStructure() {
-        $structure = $this->buildBase();
-        $structureUpright = $this->applyUprightsMask();
-        if ($structureUpright) {
-            $structure->compositeimage($structureUpright, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            $structureUpright->clear();
-        }
+        $cacheKey = "ps{$this->color}";
+        $structureCache = new \poolCaching($cacheKey, '.png');
+        if ($structureCache->is_cached()) {
+            $structure = new Imagick($structureCache->getCacheFile());
+            return $structure;
+        } else {
+            $structure = $this->buildBase();
+            $structureUpright = $this->applyUprightsMask();
+            if ($structureUpright) {
+                $structure->compositeimage($structureUpright, Imagick::COMPOSITE_DEFAULT, 0, 0);
+                $structureUpright->clear();
+            }
 
-        $structureCover = $this->applyCoverMask();
-        if ($structureCover) {
-            $structure->compositeimage($structureCover, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            $structureCover->clear();
-        }
+            $structureCover = $this->applyCoverMask();
+            if ($structureCover) {
+                $structure->compositeimage($structureCover, Imagick::COMPOSITE_DEFAULT, 0, 0);
+                $structureCover->clear();
+            }
 
-        $structureLedge = $this->applyLedgeMask();
-        if ($structureLedge) {
-            $structure->compositeimage($structureLedge, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            $structureLedge->clear();
-        }
+            $structureLedge = $this->applyLedgeMask();
+            if ($structureLedge) {
+                $structure->compositeimage($structureLedge, Imagick::COMPOSITE_DEFAULT, 0, 0);
+                $structureLedge->clear();
+            }
 
-        $structureFoot = $this->applyFootMask();
-        if ($structureFoot) {
-            $structure->compositeimage($structureFoot, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            $structureFoot->clear();
-        }
+            $structureFoot = $this->applyFootMask();
+            if ($structureFoot) {
+                $structure->compositeimage($structureFoot, Imagick::COMPOSITE_DEFAULT, 0, 0);
+                $structureFoot->clear();
+            }
 
-        $structureRails = $this->applyRailsMask();       
-        if ($structureRails) {
-            $structure->compositeimage($structureRails, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            $structureRails->clear();
-        }
+            $structureRails = $this->applyRailsMask();
+            if ($structureRails) {
+                $structure->compositeimage($structureRails, Imagick::COMPOSITE_DEFAULT, 0, 0);
+                $structureRails->clear();
+            }
+            $structure->setformat('PNG');
+            $structureImage = $structure->getImageBlob();
+            $structureCache->write_cache($structureImage);
 
-        return $structure;
+            return $structure;
+        }
     }
 
 }
