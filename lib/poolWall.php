@@ -94,7 +94,7 @@ class poolWall {
             $wallAdjust = clone $wall;
             $draw = new ImagickDraw();
             $draw->setFillColor('#ffffff');
-            $draw->setFillAlpha($this->lightenValue / 100);
+            $draw->setfillopacity($this->lightenValue / 100);
 
             $geometry = $wallAdjust->getImageGeometry();
             $width = $geometry['width'];
