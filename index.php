@@ -24,12 +24,25 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <link href="css/color.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap-slider.min.css" rel="stylesheet" type="text/css"/>
+        <style type='text/css'>
+            /* Example 1 custom styles */
+            #ex1Slider .slider-selection {
+                background-image: none;
+                webkit-box-shadow: none;
+                box-shadow: none;
+            }
+            .slider.slider-horizontal {
+                width: 100%;
+            }
+        </style>
     </head>
     <body>
         <div class="container-fluid">
             <form method="post">
                 <?php
                 $color = isset($_POST['structure_color']) ? $_POST['structure_color'] : 10;
+                $darken = isset($_POST['wall_darken']) ? $_POST['wall_darken'] : 100;
                 ?>
                 <div class="row">
                     <div class="col-sm-4">
@@ -69,7 +82,6 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
                     <div class="col-sm-8">
                         <?php
                         try {
-                            $color = isset($_POST['structure_color']) ? $_POST['structure_color'] : 10;
                             $colorName = 'Basalt Grey';
                             switch ($color) {
                                 case 20:
@@ -93,14 +105,43 @@ require_once(__ROOT__ . '/lib/poolBuilder.php');
 
 
                             $poolBuilder = new \poolBuilder();
-                            echo '<img class="img-responsive" src="data:image/jpg;base64,' . $poolBuilder->generatePool($color) . '" alt="" />';
+                            echo '<img class="img-responsive" src="data:image/jpg;base64,' . $poolBuilder->generatePool($color, $darken) . '" alt="" />';
                         } catch (Exception $ex) {
                             echo $ex->getMessage();
                         }
                         ?>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm-offset-4 col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-12">                            
+                                <input id="ex1" name="wall_darken" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="200" data-slider-step="1" data-slider-value="100"/>
+                            </div>
+                            <div class="col-sm-6 text-center" style="border-right: 1px solid #0480be">
+                                <label>Lighten</label>
+                            </div>
+                            <div class="col-sm-6 text-center" style="border-left: 1px solid #0480be">
+                                <label>Darken</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/bootstrap-slider.min.js" type="text/javascript"></script>
+        <script type='text/javascript'>
+            $(document).ready(function () {
+                var darkenValue = <?php echo "$darken" ?>;
+                $('#ex1').slider({
+                    value: darkenValue,
+                    formatter: function (value) {
+                        return Math.abs(value - 100) + ' %';
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

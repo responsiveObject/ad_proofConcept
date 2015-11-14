@@ -2,13 +2,19 @@
 
 class poolWall {
 
-    const MIN_LIGHTNESS = -50;
-    const MAX_LIGHTNESS = 40;
+    const COLOR_BASALTGREY = 10;
+    const COLOR_BEIGE = 20;
+    const COLOR_BURGUNDY = 30;
+    const COLOR_CACAO = 40;
+    const COLOR_CHOCOBROWN = 50;
+    const COLOR_ONYX = 60;
 
-    public $lightness = 0;
-    public $saturation = 0;
     private $wallImage;
     private $mask;
+    private $color;
+    private $baseColor;
+    private $darkenValue;
+    private $lightenValue;
 
     function __construct() {
         $this->wallImage = 'images/R24_BASE-wall_WRINKLE.png';
@@ -18,56 +24,102 @@ class poolWall {
 
     function __destruct() {
         $this->mask->clear();
-        $this->mask->destroy();
     }
 
-    private function setHSL($wall, $hue, $saturation, $lightness) {
-        $wallIterator = $wall->getpixeliterator();
+    private function setColor($color) {
+        $this->color = $color;
+        $this->baseColor = $this->getRGB();
+    }
 
-        foreach ($wallIterator as $row => $pixels) { // loop through pixel rows
-            foreach ($pixels as $column => $pixel) { // Loop through the pixels in the row (columns)
-//                if ($column % 2) {
-//                    $pixel->setcolor('rgba(0,0,0,0)');
-//                }   
-                $hslColor = $pixel->gethsl();
-//                if ($hslColor['luminosity'] > 0) {
-//                    $r = '';
-//                }
-                //if ($hslColor['saturation'] != 0)
-                $pixel->sethsl($hslColor['hue'], 2, $hslColor['luminosity']);
-            }
-            $wallIterator->synciterator();
+    private function setDarkenValue($darken) {
+        $this->darkenValue = 100;
+        $this->lightenValue = 0;
+
+        if ($darken > 100) {
+            // brightness should be from 100 to 50
+            $offset = (($darken - 100) / 100) * 50;
+            $this->darkenValue = 100 - $offset;
         }
 
-        //$wall->modulateimage(-5, 0, 0);
-        return $wall;
-    }
-
-    private function applyAttribute(Imagick $wall) {
-//        $h = $wall->getimageheight();
-//        $w = $wall->getimagewidth();
-        if ($this->saturation === 0 && $this->lightness === 0) {
-            return $wall;
+        if ($darken < 100) {
+            // set opacity is from 0 to 40
+            $offset = ((100 - $darken) / 100) * 40;
+            $this->lightenValue = $offset;
         }
-        $wall->modulateimage(100, 150, 100);
-        //return $this->setHSL($wall, 0, $this->saturation, 0);
-
-        return $wall;
     }
 
-    private function buildZeroColorWall() {
+    private function getRGB() {
+        $baseColor = 'rgb(204,196,192)';
+        switch ($this->color) {
+            case self::COLOR_BASALTGREY:
+                $baseColor = 'rgb(188,196,204)';
+                break;
+            case self::COLOR_BEIGE:
+                $baseColor = 'rgb(242,240,236)';
+                break;
+            case self::COLOR_BURGUNDY:
+                $baseColor = 'rgb(230,202,204)';
+                break;
+            case self::COLOR_CACAO:
+                $baseColor = 'rgb(204,196,192)';
+                break;
+            case self::COLOR_CHOCOBROWN:
+                $baseColor = 'rgb(204,192,182)';
+                break;
+            case self::COLOR_ONYX:
+                $baseColor = 'rgb(194,206,218)';
+                break;
+        }
+
+        return $baseColor;
+    }
+
+    private function colorizeWall() {
         $wall = new Imagick($this->wallImage);
+
+        $im = new Imagick();
+        $im->newimage(1280, 720, $this->baseColor, 'png');
+        $wall->compositeimage($im, Imagick::COMPOSITE_MULTIPLY, 0, 0);
+        $im->clear();
+        
+        // darken image
+        if ($this->darkenValue < 100 && $this->darkenValue >= 50) {
+            $wallAdjust = $wall->clone();
+            $wallAdjust->modulateimage($this->darkenValue, 100, 100);
+            $wall->compositeimage($wallAdjust, Imagick::COMPOSITE_MULTIPLY, 0, 0);
+            $wallAdjust->clear();
+        }
+
+        if ($this->lightenValue > 0) {           
+            $wallAdjust = $wall->clone();
+            $draw = new ImagickDraw();
+            $draw->setFillColor('#ffffff');
+            $draw->setFillAlpha($this->lightenValue / 100);
+
+            $geometry = $wallAdjust->getImageGeometry();
+            $width = $geometry['width'];
+            $height = $geometry['height'];
+            $draw->rectangle(0, 0, $width, $height);
+            $wallAdjust->drawImage($draw);
+            $wall->compositeimage($wallAdjust, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            $wallAdjust->clear();
+        }
+
         $wall->compositeimage($this->mask, Imagick::COMPOSITE_DSTIN, 0, 0);
 
         return $wall;
     }
 
-    public function generatePoolWall() {
-        
+    public function generatePoolWall($color, $darken) {
+        $this->setColor($color);
+        $this->setDarkenValue($darken);
+
         $baseWall = new Imagick($this->wallImage);
-        $wall = $this->buildZeroColorWall();
-        //$wall->modulateimage(50, 100, 100);
+        $wall = $this->colorizeWall();
+
         $baseWall->compositeimage($wall, Imagick::COMPOSITE_DEFAULT, 0, 0);
+        $wall->clear();
+
         return $baseWall;
     }
 
