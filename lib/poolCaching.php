@@ -3,7 +3,7 @@
 class poolCaching {
 
     // Number of seconds a pool should remain cached for
-    private $cache_expires = 3600; // 8 hours
+    private $cache_expires = 31536000; // 1 year
     private $cache_folder;
     private $cache_file;
 
