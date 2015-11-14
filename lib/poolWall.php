@@ -84,14 +84,14 @@ class poolWall {
         
         // darken image
         if ($this->darkenValue < 100 && $this->darkenValue >= 50) {
-            $wallAdjust = $wall->clone();
+            $wallAdjust = clone $wall;
             $wallAdjust->modulateimage($this->darkenValue, 100, 100);
             $wall->compositeimage($wallAdjust, Imagick::COMPOSITE_MULTIPLY, 0, 0);
             $wallAdjust->clear();
         }
 
         if ($this->lightenValue > 0) {           
-            $wallAdjust = $wall->clone();
+            $wallAdjust = clone $wall;
             $draw = new ImagickDraw();
             $draw->setFillColor('#ffffff');
             $draw->setFillAlpha($this->lightenValue / 100);
