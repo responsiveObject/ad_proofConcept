@@ -51,6 +51,7 @@ class poolBuilder {
     }
 
     public function generatePool($color, $darken) {
+        set_time_limit(0);
         $cacheKey = "c{$color}d{$darken}";
         $poolCache = new \poolCaching($cacheKey);
         if ($poolCache->is_cached()) {
