@@ -54,7 +54,7 @@ class poolBuilder {
         set_time_limit(0);
         $cacheKey = "c{$color}d{$darken}";
         $poolCache = new \poolCaching($cacheKey);
-        if (false && $poolCache->is_cached()) {
+        if ($poolCache->is_cached()) {
             $poolImageCached = $poolCache->read_cache();
             return $poolImageCached;
         } else {
@@ -68,7 +68,7 @@ class poolBuilder {
             $wall->compositeimage($structureImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
 
             $poolImage = base64_encode($wall->getImageBlob());
-            //$poolCache->write_cache($poolImage);
+            $poolCache->write_cache($poolImage);
             
             return $poolImage;
         }
