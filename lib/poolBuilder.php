@@ -68,7 +68,7 @@ class poolBuilder {
             $wall->compositeimage($structureImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
 
             $poolImage = base64_encode($wall->getImageBlob());
-            $poolCache->write_cache($poolImage);
+            //$poolCache->write_cache($poolImage);
             
             return $poolImage;
         }
