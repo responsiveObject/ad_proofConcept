@@ -15,6 +15,8 @@ class poolWall {
     private $baseColor;
     private $darkenValue;
     private $lightenValue;
+    private $hueValue;
+    private $saturationValue;
 
     function __construct() {
         $this->wallImage = 'images/R24_BASE-wall_WRINKLE.png';
@@ -45,6 +47,20 @@ class poolWall {
             // set opacity is from 0 to 40
             $offset = ((100 - $darken) / 100) * 40;
             $this->lightenValue = $offset;
+        }
+    }
+
+    private function setHueSaturationValue($hue, $saturation) {
+        $this->hueValue = 100;
+        $this->saturationValue = 100;
+        
+        if ($hue) {
+            $this->hueValue = 200 * $hue / 360; // 100 + (($hue - 180) * 100/360);
+        }
+
+        if ($saturation) {
+            // saturation is between 100 - 125
+            $this->saturationValue = 100 + (($saturation / 100) * 25);
         }
     }
 
@@ -81,7 +97,7 @@ class poolWall {
         $im->newimage(1280, 720, $this->baseColor, 'png');
         $wall->compositeimage($im, Imagick::COMPOSITE_MULTIPLY, 0, 0);
         $im->clear();
-        
+
         // darken image
         if ($this->darkenValue < 100 && $this->darkenValue >= 50) {
             $wallAdjust = clone $wall;
@@ -90,7 +106,8 @@ class poolWall {
             $wallAdjust->clear();
         }
 
-        if ($this->lightenValue > 0) {           
+        // lighten image
+        if ($this->lightenValue > 0) {
             $wallAdjust = clone $wall;
             $draw = new ImagickDraw();
             $draw->setFillColor('#ffffff');
@@ -105,14 +122,18 @@ class poolWall {
             $wallAdjust->clear();
         }
 
+        // apply hue/saturation
+        $wall->modulateimage(100, $this->saturationValue, $this->hueValue);
+
         $wall->compositeimage($this->mask, Imagick::COMPOSITE_DSTIN, 0, 0);
 
         return $wall;
     }
 
-    public function generatePoolWall($color, $darken) {
+    public function generatePoolWall($color, $darken, $hue, $saturation) {
         $this->setColor($color);
         $this->setDarkenValue($darken);
+        $this->setHueSaturationValue($hue, $saturation);
 
         $baseWall = new Imagick($this->wallImage);
         $wall = $this->colorizeWall();

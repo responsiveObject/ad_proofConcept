@@ -50,15 +50,15 @@ class poolBuilder {
         return $shadow;
     }
 
-    public function generatePool($color, $darken) {
+    public function generatePool($color, $darken, $hue, $saturation) {
         set_time_limit(0);
         $cacheKey = "c{$color}d{$darken}";
         $poolCache = new \poolCaching($cacheKey);
-        if ($poolCache->is_cached()) {
+        if (false && $poolCache->is_cached()) {
             $poolImageCached = $poolCache->read_cache();
             return $poolImageCached;
         } else {
-            $wall = $this->wall->generatePoolWall($color, $darken);
+            $wall = $this->wall->generatePoolWall($color, $darken, $hue, $saturation);
             $shadowMask = $this->applyShadow($wall);
             $wall->compositeimage($shadowMask, Imagick::COMPOSITE_MULTIPLY, 0, 0);
 
