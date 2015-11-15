@@ -50,7 +50,7 @@ class poolBuilder {
         return $shadow;
     }
 
-    public function generatePool($color, $darken, $hue, $saturation) {
+    public function generatePool($color, $darken, $hue=180, $saturation=0) {
         set_time_limit(0);
         $cacheKey = "c{$color}d{$darken}";
         $poolCache = new \poolCaching($cacheKey);
