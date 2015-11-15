@@ -16,9 +16,10 @@ class poolCaching {
     // Checks whether the page has been cached or not
     public function is_cached() {
         $cachefile = $this->cache_folder . $this->cache_file;
-        $cachefile_created = (file_exists($cachefile)) ? @filemtime($cachefile) : 0;
-
-        return (time() - $this->cache_expires < $cachefile_created);
+        return file_exists($cachefile);
+        
+        //$cachefile_created = (file_exists($cachefile)) ? @filemtime($cachefile) : 0;
+        //return (time() - $this->cache_expires < $cachefile_created);
     }
 
     function getCacheFile() {

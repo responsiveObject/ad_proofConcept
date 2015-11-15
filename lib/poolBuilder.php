@@ -52,9 +52,9 @@ class poolBuilder {
 
     public function generatePool($color, $darken, $hue=180, $saturation=0) {
         set_time_limit(0);
-        $cacheKey = "c{$color}d{$darken}";
+        $cacheKey = "c{$color}d{$darken}h{$hue}s{$saturation}";
         $poolCache = new \poolCaching($cacheKey);
-        if (false && $poolCache->is_cached()) {
+        if ($poolCache->is_cached()) {
             $poolImageCached = $poolCache->read_cache();
             return $poolImageCached;
         } else {
